@@ -2,7 +2,7 @@ import CodeEditor from './Editor'
 
 function App() {
   return (
-    <div className="App">
+    <div>
       <CodeEditor />
     </div>
   )

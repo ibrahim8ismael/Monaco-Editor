@@ -13,9 +13,28 @@ export default function CodeEditor() {
   const handleRun = () => {
     try {
       if (language === 'javascript') {
-        // Using Function constructor to run JS code
+        // Capture console.log outputs
+        let consoleOutput = [];
+        const originalConsoleLog = console.log;
+        console.log = (...args) => {
+          consoleOutput.push(args.map(arg => 
+            typeof arg === 'object' ? JSON.stringify(arg, null, 2) : String(arg)
+          ).join(' '));
+          originalConsoleLog(...args);
+        };
+
+        // Execute the code
         const result = new Function(code)();
-        setOutput(String(result || 'Code executed successfully'));
+        
+        // Restore original console.log
+        console.log = originalConsoleLog;
+
+        // Set the output
+        if (consoleOutput.length > 0) {
+          setOutput(consoleOutput.join('\n'));
+        } else {
+          setOutput(String(result !== undefined ? result : 'No output'));
+        }
       } else if (language === 'html') {
         // For HTML, we'll show it in an iframe
         setOutput(code);
